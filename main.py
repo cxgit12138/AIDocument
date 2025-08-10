@@ -1,0 +1,56 @@
+"""
+项目主函数，负责初始化FastAPI应用和启动服务器
+"""
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from Api.FileReviewApi.fileReviewApi import router as file_review_router
+from Api.RarApi.rarApi import router as rar_router,init_rar_config
+from Api.RarApi.文件下载api import router as download_router
+import uvicorn
+
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 服务启动时初始化配置
+    init_rar_config() # 初始化RarApi的配置
+    yield
+    # 此处可添加服务关闭时的清理逻辑（如有需要）
+
+def create_app():
+    # 创建FastAPI应用实例
+    app = FastAPI(
+        title="GxpAI平台",
+        description="提供文件审核、风险评估等功能的API接口",
+        version="1.0.0",
+        lifespan=lifespan
+    )
+
+    # 配置CORS中间件
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"]
+    )
+
+
+    # 包含路由
+    # 将文件审核路由挂载到/api/fileReview路径
+    app.include_router(file_review_router, prefix="/api")
+
+    # 将风险评估路由挂载到/api/rar路径
+    app.include_router(rar_router, prefix="/api")
+
+    # 将下载路由挂载到/api/download/urstemplate路径
+    app.include_router(download_router, prefix="/api")
+
+    return app
+
+app = create_app()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=7001)

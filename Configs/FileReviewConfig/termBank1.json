@@ -1,0 +1,28 @@
+{
+    "termBank":[
+        {
+            "correctTerm": "API",
+            "errorTerm": ["api", "Api"]
+        },
+        {
+            "correctTerm": "JSON",
+            "errorTerm": ["json", "Json"]
+        },
+        {
+            "correctTerm": "人工智能",
+            "errorTerm": ["AI智能", "人工智慧"]
+        },
+        {
+            "correctTerm": "服务器",
+            "errorTerm": ["服务端", "server端"]
+        },
+        {
+            "correctTerm": "DeepSeek",
+            "errorTerm": ["deepseek","Deepseek"]
+        },
+        {
+            "correctTerm": "肯定",
+            "errorTerm": ["可能","应该"]
+        }
+    ]
+}

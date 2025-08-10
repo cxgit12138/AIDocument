@@ -1,0 +1,40 @@
+{
+    "annotation": "这是注释：这是agentID=2的配置文件包含大模型配置参数、术语库2路径、文件审核结果保存路径、格式审核定义标准",
+    "fileReview":{
+        "apiKey": "sk-vnyytwedvbgpjidkbcqltrlczqmygqcfviqsnmtvobxnqedk",
+        "baseUrl": "https://api.siliconflow.cn/v1",
+        "modelName": "deepseek-ai/DeepSeek-V3",
+        "termBankPath": "./Configs/FileReviewConfig/termBank2.json",
+        "fileReviewResultPath": "./Results/FileReviewResult/文件审核结果.json",
+        "formatStandards": [
+            {
+                "standardName": "正文标准要求",
+                "styleName": "正文",
+                "fontSize": 10.5,
+                "fontColor": "(0, 0, 0)",
+                "allowedFonts": "等线"
+            },
+            {
+                "standardName": "标题1标准要求",
+                "styleName":"Heading 1",
+                "fontSize": 22.0,
+                "fontColor": "(0, 0, 0)",
+                "allowedFonts": "黑体"
+            },
+            {
+                "standardName": "标题2标准要求",
+                "styleName":"Heading 2",
+                "fontSize": 16.0,
+                "fontColor": "(0, 0, 0)",
+                "allowedFonts": "黑体"
+            },
+            {
+                "standardName": "标题3标准要求",
+                "styleName":"Heading 3",
+                "fontSize": 14.0,
+                "fontColor": "(0, 0, 0)",
+                "allowedFonts": "黑体"
+            }
+        ]
+    }
+}
