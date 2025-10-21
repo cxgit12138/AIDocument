@@ -6,9 +6,9 @@ API路由定义模块
 import os
 import shutil
 import json
-from openai import OpenAI
+from openai import AsyncOpenAI
 from fastapi import APIRouter, HTTPException, UploadFile, File,Query
-from Agents.FileReviewAgents.agentRun import agent_file_review_run
+from Agents.FileReviewAgents.agentRunF import agent_file_review_run
 from Models.FileReviewModels.ApiModels.fileReviewApiModels import FileReviewResult, Example, Config
 
 
@@ -25,7 +25,7 @@ def load_file_review_config(agentID:str):
             config_data = json.load(f)
             # 使用模型解析配置
             config_obj = Config(**config_data)
-            client = OpenAI(
+            client = AsyncOpenAI(
                 api_key=config_obj.fileReview.apiKey,
                 base_url=config_obj.fileReview.baseUrl
             )
@@ -89,7 +89,7 @@ async def review_file(
             shutil.copyfileobj(file.file, buffer)
 
         # 调用原有处理逻辑
-        result = agent_file_review_run(
+        result = await agent_file_review_run(
             filePath=filePath,
             termBankPath=config["termBankPath"],
             fileReviewResultPath=config["fileReviewResultPath"],

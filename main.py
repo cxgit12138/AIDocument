@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
 def create_app():
     # 创建FastAPI应用实例
     app = FastAPI(
-        title="GxpAI平台",
+        title="AI小助手",
         description="提供文件审核、风险评估等功能的API接口",
         version="1.0.0",
         lifespan=lifespan

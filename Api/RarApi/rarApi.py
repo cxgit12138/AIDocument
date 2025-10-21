@@ -5,20 +5,9 @@ import os
 import asyncio
 from pathlib import Path
 from datetime import datetime
-from io import BytesIO
-from urllib.parse import quote_plus
 
-from Models.RarModels.DomainModels.rarDomainModels import RarAnalysisResult
-from Agents.RarAgents.文件读写 import read_urs_file, write_excel, export_to_json
-from Agents.RarAgents.agent失效事件 import analyze_failure_event
-from Agents.RarAgents.agent潜在失效后果 import analyze_potential_failure_consequences
-from Agents.RarAgents.agent严重性 import analyze_severity
-from Agents.RarAgents.agent可能性 import analyze_probability
-from Agents.RarAgents.agent风险等级 import calculate_risk_level
-from Agents.RarAgents.agent可检测性 import analyze_detectability
-from Agents.RarAgents.agent风险优先级 import calculate_risk_priority
-from Agents.RarAgents.agent风险控制措施 import analyze_risk_control_measures
 from Configs.RarConfig.rarConfigInit import rar_config
+from Agents.RarAgents.agentRunR import run_rar_analysis
 
 router=APIRouter()
 
@@ -71,32 +60,16 @@ async def analyze_urs(
         output_json= config["output_dir"] / f"RAR分析结果_{timestamp}.json"
 
         try:
-            # 读取URS数据
-            rar_data_array = read_urs_file(urs_path)
-
-            # 限制处理数量
-            if limit > 0 and limit < len(rar_data_array):
-                rar_data_array = rar_data_array[:limit]
-
-            # 创建信号量控制并发,因为硅基流动初始等级并发请求API调用时容易超出平台服务频率的问题，控制最大并发量
-            semaphore = asyncio.Semaphore(config["concurrency"]["maxConcurrentRequests"])
-            print("正在进行RAR风险评估...")
-            # 分析每个需求
-            for item in rar_data_array:
-                await analyze_failure_event(item, semaphore)
-                await analyze_potential_failure_consequences(item, semaphore)
-                await analyze_severity(item, semaphore)
-                await analyze_probability(item, semaphore)
-                await calculate_risk_level(item)
-                await analyze_detectability(item, semaphore)
-                await calculate_risk_priority(item)
-                await analyze_risk_control_measures(item, semaphore)
-
-            # # 写入Excel文件
-            write_excel(template_path, str(output_excel), rar_data_array)
-
-            # 导出JSON数据
-            export_to_json(rar_data_array, str(output_json))
+            # 执行RAR分析
+            await run_rar_analysis(
+                urs_path=urs_path,
+                template_path=template_path,
+                output_excel=output_excel,
+                output_json=output_json,
+                limit=limit,
+                max_concurrent_requests=config["concurrency"]["maxConcurrentRequests"],
+                timeout_seconds=600
+            )
 
             # 构建返回结果
             return FileResponse(

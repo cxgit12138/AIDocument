@@ -1,5 +1,6 @@
 """
 对docx文件的字体、字体大小、字体颜色按不同标准（标题 1\2\3，正文）进行审核
+格式审核不设计外部API调用，保留同步逻辑，不使用异步处理
 """
 import ast
 from Models.FileReviewModels.DomainModels.fileReviewDomainModels import FormatError
