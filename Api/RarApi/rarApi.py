@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 import tempfile
 import os
 import asyncio
+import logging
 from pathlib import Path
 from datetime import datetime
 
@@ -10,6 +11,8 @@ from Configs.RarConfig.rarConfigInit import rar_config
 from Agents.RarAgents.agentRunR import run_rar_analysis
 
 router=APIRouter()
+
+logger=logging.getLogger("rar_annalysis")
 
 # 初始化配置
 def init_rar_config():
@@ -20,6 +23,7 @@ def init_rar_config():
         "template_path": Path("./Files/RarUploads/RAR空白模板.xlsx")
     }
     config["output_dir"].mkdir(parents=True, exist_ok=True)
+    logger.info("RAR configuration initialized")
 
 
 @router.post(
@@ -43,6 +47,7 @@ async def analyze_urs(
     Returns:
         分析结果和输出文件路径
     """
+    logger.info(f"Received RAR analysis request: {urs_file.filename}, limit: {limit}")
     # 创建临时目录保存上传的文件，处理后自动清理文件
     with tempfile.TemporaryDirectory() as temp_dir:
         # 保存上传的文件
@@ -60,6 +65,7 @@ async def analyze_urs(
         output_json= config["output_dir"] / f"RAR分析结果_{timestamp}.json"
 
         try:
+            logger.info(f"Starting RAR analysis for: {urs_file.filename}")
             # 执行RAR分析
             await run_rar_analysis(
                 urs_path=urs_path,
@@ -70,6 +76,7 @@ async def analyze_urs(
                 max_concurrent_requests=config["concurrency"]["maxConcurrentRequests"],
                 timeout_seconds=600
             )
+            logger.info(f"RAR analysis completed for: {output_excel}")
 
             # 构建返回结果
             return FileResponse(
@@ -79,9 +86,11 @@ async def analyze_urs(
             )
 
         except Exception as e:
+            logger.error(f"Error during RAR analysis: {str(e)}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"处理失败: {str(e)}")
 
 
 @router.get("/health", summary="服务健康检查")
 async def health_check():
+    logger.debug("Health check requested")
     return {"status": "ok"}

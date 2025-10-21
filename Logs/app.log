@@ -1,0 +1,38 @@
+INFO:     2025-10-21 11:00:45 Configs.logging_config 93710:58 Routes registered successfully
+INFO:     2025-10-21 11:00:45 Configs.logging_config 93710:21 Initializing application...
+INFO:     2025-10-21 11:00:45 rar_annalysis 93710:26 RAR configuration initialized
+INFO:     2025-10-21 11:00:45 Configs.logging_config 93710:23 Application initialized successfully
+INFO:     2025-10-21 11:01:15 rar_annalysis 93710:50 Received RAR analysis request: urstemplate.xlsx, limit: 5
+INFO:     2025-10-21 11:01:15 rar_annalysis 93710:68 Starting RAR analysis for: urstemplate.xlsx
+INFO:     2025-10-21 11:01:19 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:20 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:24 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:25 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:26 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:26 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:27 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:28 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:29 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:30 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:30 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:31 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:33 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:33 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:34 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:34 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:35 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:35 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:35 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:38 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:39 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:41 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:41 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:44 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:44 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:45 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:45 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:49 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:52 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:52 httpx 93710:1740 HTTP Request: POST https://api.siliconflow.cn/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     2025-10-21 11:01:52 rar_annalysis 93710:79 RAR analysis completed for: Results/RarResult/RAR分析结果_20251021_110115.xlsx
+INFO:     2025-10-21 11:02:58 Configs.logging_config 93710:26 Application shutting down...

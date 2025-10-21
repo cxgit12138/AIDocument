@@ -8,15 +8,22 @@ from Api.FileReviewApi.fileReviewApi import router as file_review_router
 from Api.RarApi.rarApi import router as rar_router,init_rar_config
 from Api.RarApi.文件下载api import router as download_router
 import uvicorn
+import logging
+from Configs.logging_config import setup_logging
+
+logger=setup_logging()
 
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 服务启动时初始化配置
+    logger.info("Initializing application...")
     init_rar_config() # 初始化RarApi的配置
+    logger.info("Application initialized successfully")
     yield
     # 此处可添加服务关闭时的清理逻辑（如有需要）
+    logger.info("Application shutting down...")
 
 def create_app():
     # 创建FastAPI应用实例
@@ -48,6 +55,7 @@ def create_app():
     # 将下载路由挂载到/api/download/urstemplate路径
     app.include_router(download_router, prefix="/api")
 
+    logger.info("Routes registered successfully")
     return app
 
 app = create_app()
