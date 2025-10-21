@@ -1,10 +1,11 @@
 """
 对文件内容的用词术语准确度，和术语库进行比对审核
+术语检查不调用外部API，保持同步函数
 """
 from Models.FileReviewModels.DomainModels.fileReviewDomainModels import TermBank,TermError
-import concurrent.futures  # 新增并发库导入
 import json
 import re
+import concurrent.futures
 
 
 def load_terminology(termBankPath):
@@ -21,7 +22,6 @@ def load_terminology(termBankPath):
 
 
 def check_termErrors(text_blocks, termBankPath):
-    termErrors = []
     terminology_db = load_terminology(termBankPath)  # 现在获取的是termBank数组
 
     # 构建反向映射词典（错误形式 -> 正确术语）
@@ -42,7 +42,7 @@ def check_termErrors(text_blocks, termBankPath):
     pattern_str = '|'.join(r'{}'.format(re.escape(term)) for term in terms_to_match)
     pattern = re.compile(pattern_str, flags=re.IGNORECASE)
 
-    # 后续process_block函数修改部分
+    # 处理单个文本块
     def process_block(text_block):
         block_errors = []
         text_block = text_block.strip()
@@ -77,9 +77,10 @@ def check_termErrors(text_blocks, termBankPath):
 
         return block_errors
 
-    # 使用线程池并发处理
+    # 使用多线程并发处理
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = [executor.submit(process_block, text_block) for text_block in text_blocks]
+        termErrors = []
         for future in concurrent.futures.as_completed(futures):
             block_errors = future.result()
             if block_errors:

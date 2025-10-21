@@ -2,14 +2,13 @@
 对文件内容的基础语法进行ai审核
 """
 from  Models.FileReviewModels.DomainModels.fileReviewDomainModels import GrammarError
-import concurrent.futures  # 新增并发库导入
+import asyncio
 import json
 
-def check_grammarErrors(text_blocks, client, modelName):
+async def check_grammarErrors(text_blocks, client, modelName):
     """并发处理语法检查"""
-    grammarErrors = []
 
-    def process_block(text_block):
+    async def process_block(text_block):
         system_prompt = """
         你是一名文档语法审核助手，用户将给你一些可能含有语法错误的文档，请你按json格式输出:
         1.请你找出里面的错误语句，
@@ -39,7 +38,7 @@ def check_grammarErrors(text_blocks, client, modelName):
         messages = [{"role": "system", "content": system_prompt},
                     {"role": "user", "content": text_block}]
         try:
-            response = client.chat.completions.create(
+            response =  await client.chat.completions.create(
                 model=modelName,
                 messages=messages,
                 response_format={
@@ -53,17 +52,14 @@ def check_grammarErrors(text_blocks, client, modelName):
             print(f"处理block时出错: {str(e)}")
             return []
 
-    # 使用线程池并发处理（建议5并发，根据API限流调整）
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [executor.submit(process_block, text_block) for text_block in text_blocks]
+    # 使用 asyncio.gather 并发处理
+    tasks = [process_block(block) for block in text_blocks]
+    results = await asyncio.gather(*tasks)
 
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                result = future.result()
-                if isinstance(result, list):
-                    grammarErrors.extend(result)
-            except Exception as e:
-                print(f"处理结果时出错: {str(e)}")
+    grammarErrors = []
+    for result in results:
+        if isinstance(result, list):
+            grammarErrors.extend(result)
 
     print(f"语法检查完成，找到 {len(grammarErrors)} 个错误")
     return grammarErrors

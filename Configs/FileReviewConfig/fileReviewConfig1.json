@@ -1,7 +1,7 @@
 {
     "annotation": "这是注释：这是agentID=1的配置文件(模拟实际中需要加载不同的配置)包含大模型配置参数、术语库1路径、文件审核结果保存路径、格式审核定义标准",
     "fileReview":{
-        "apiKey": "sk-vnyytwedvbgpjidkbcqltrlczqmygqcfviqsnmtvobxnqedk",
+        "apiKey": "sk-skojubiepolyzevdmpyvcbsgdhdivjyaearyflhwsvizhfkx",
         "baseUrl": "https://api.siliconflow.cn/v1",
         "modelName": "deepseek-ai/DeepSeek-V3",
         "termBankPath": "./Configs/FileReviewConfig/termBank1.json",

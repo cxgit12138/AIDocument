@@ -13,10 +13,12 @@ from Agents.FileReviewAgents.agent_术语审核 import check_termErrors
 from Agents.FileReviewAgents.agent_格式审核 import check_formatErrors
 from Models.FileReviewModels.ApiModels.fileReviewApiModels import FileReviewResult
 from docx import Document
+import asyncio
+import functools
 
 
 
-def agent_file_review_run(filePath,termBankPath,fileReviewResultPath,client,modelName,formatStandards):
+async def agent_file_review_run(filePath,termBankPath,fileReviewResultPath,client,modelName,formatStandards):
     print("提取文件信息...")
     _, ext = os.path.splitext(filePath)
 
@@ -29,15 +31,21 @@ def agent_file_review_run(filePath,termBankPath,fileReviewResultPath,client,mode
         print("正在对文本分块处理...")
         blocks = split_into_blocks(styled_content, 50)
         text_blocks=split_into_textblocks(text,max_length=50)
-        # 语法审核
-        print("正在对文本进行语法审核...")
-        grammarErrors = check_grammarErrors(text_blocks,client,modelName)
-        # 术语审核
-        print("正在对文本进行术语审核...")
-        termErrors = check_termErrors(text_blocks,termBankPath)
-        # 格式检查
-        print("正在对文本进行格式审核...")
-        formatErrors = check_formatErrors(blocks,formatStandards)
+
+        print("正在执行语法、术语和格式审核...")
+        # 语法检查使用异步
+        grammar_task = asyncio.create_task(check_grammarErrors(text_blocks, client, modelName))
+        # 术语和格式检查保持同步
+        term_task = asyncio.get_event_loop().run_in_executor(
+            None,
+            functools.partial(check_termErrors, text_blocks, termBankPath)
+        )
+        format_task = asyncio.get_event_loop().run_in_executor(
+            None,
+            functools.partial(check_formatErrors, blocks, formatStandards)
+        )
+        #开始执行
+        grammarErrors, termErrors, formatErrors = await asyncio.gather(grammar_task, term_task, format_task)
 
         errors=FileReviewResult(
             grammarErrors=grammarErrors,
