@@ -272,6 +272,22 @@
             background: #1e90ff;
         }
 
+        .target-format-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .target-format-group label {
+            margin-bottom: 0;
+            min-width: 80px;
+        }
+
+        .target-format-group select {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
         @media (max-width: 768px) {
             .cards {
                 grid-template-columns: 1fr;
@@ -284,6 +300,15 @@
             h1 {
                 font-size: 2rem;
             }
+
+            .target-format-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .target-format-group label {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -291,7 +316,6 @@
     <div class="container">
         <header>
             <h1>AI文档助手</h1>
-            <p class="subtitle">智能文件审核与风险评估系统</p>
         </header>
 
         <div class="cards">
@@ -324,6 +348,29 @@
                 <button id="analyzeBtn">开始分析</button>
                 <button id="downloadTemplateBtn" class="download-btn">下载URS模板</button>
             </div>
+
+            <!-- 新增的文档转换功能 -->
+            <div class="card">
+                <h2 class="card-title">🔄 文档格式转换</h2>
+                <div class="form-group">
+                    <label for="convertFile">上传待转换文件</label>
+                    <input type="file" id="convertFile">
+                </div>
+                <div class="form-group target-format-group">
+                    <label for="targetFormat">目标格式</label>
+                    <select id="targetFormat">
+                        <option value="">请选择目标格式</option>
+                        <option value="pdf">PDF</option>
+                        <option value="docx">Word (.docx)</option>
+                        <option value="html">HTML</option>
+                        <option value="txt">Text</option>
+                        <option value="md">Markdown</option>
+                        <option value="json">JSON</option>
+                        <option value="yaml">YAML</option>
+                    </select>
+                </div>
+                <button id="convertBtn">开始转换</button>
+            </div>
         </div>
 
         <div id="loading" class="loading" style="display: none;">
@@ -348,10 +395,35 @@
         // API基础URL
         const BASE_URL = 'http://localhost:7001/api';
 
+        const CONVERSION_MAP = {
+            '.md': ['.html', '.docx', '.txt'],
+            '.txt': ['.md', '.html'],
+            '.docx': ['.pdf', '.html', '.txt', '.md'],
+            '.pdf': ['.txt', '.html', '.md'],
+            '.html': ['.md', '.docx', '.txt'],
+            '.json': ['.yaml', '.yml', '.txt', '.xml', '.csv', '.html'],
+            '.yaml': ['.json', '.txt'],
+            '.yml': ['.json', '.txt']
+        };
+
+        const FORMAT_DESCRIPTIONS = {
+            '.pdf': 'PDF',
+            '.html': 'HTML',
+            '.txt': 'Text',
+            '.md': 'Markdown',
+            '.docx': 'Word (.docx)',
+            '.json': 'JSON',
+            '.yaml': 'YAML',
+            '.yml': 'YAML',
+            '.xml': 'XML',
+            '.csv': 'CSV'
+        };
+
         // DOM元素
         const reviewBtn = document.getElementById('reviewBtn');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+        const convertBtn = document.getElementById('convertBtn'); // 新增转换按钮
         const loading = document.getElementById('loading');
         const resultContainer = document.getElementById('resultContainer');
 
@@ -463,6 +535,82 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('模板下载失败: ' + error.message);
+            }
+        });
+
+        // 监听文件选择事件
+        document.getElementById('convertFile').addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+
+            // 获取文件扩展名
+            const ext = '.' + file.name.split('.').pop().toLowerCase();
+            const targetFormatSelect = document.getElementById('targetFormat');
+
+            // 清空现有选项
+            targetFormatSelect.innerHTML = '<option value="">请选择目标格式</option>';
+
+            // 如果找到支持的转换关系
+            if (CONVERSION_MAP[ext]) {
+                // 添加支持的目标格式选项
+                CONVERSION_MAP[ext].forEach(format => {
+                    const option = document.createElement('option');
+                    option.value = format.replace('.', ''); // 去掉点号
+                    option.textContent = FORMAT_DESCRIPTIONS[format] || format;
+                    targetFormatSelect.appendChild(option);
+                });
+            }
+        });
+
+        // 文档转换功能
+        convertBtn.addEventListener('click', async () => {
+            const fileInput = document.getElementById('convertFile');
+            const targetFormat = document.getElementById('targetFormat').value;
+
+            if (!fileInput.files.length) {
+                alert('请选择要转换的文件');
+                return;
+            }
+
+            if (!targetFormat) {
+                alert('请选择目标格式');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('target_format', targetFormat);
+
+            showLoading();
+
+            try {
+                const response = await fetch(`${BASE_URL}/convert`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('转换失败');
+
+                // 下载转换后的文件
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                // 生成下载文件名
+                const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                a.download = `${originalName}.${targetFormat}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                alert('文档转换完成，文件已下载');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('文档转换过程中出现错误: ' + error.message);
+            } finally {
+                hideLoading();
             }
         });
 

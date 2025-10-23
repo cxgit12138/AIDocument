@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from Api.FileReviewApi.fileReviewApi import router as file_review_router
 from Api.RarApi.rarApi import router as rar_router,init_rar_config
 from Api.RarApi.文件下载api import router as download_router
+from Api.ConvertApi.convertApi import router as convert_router
 import uvicorn
 import logging
 from Configs.logging_config import setup_logging
@@ -29,7 +30,7 @@ def create_app():
     # 创建FastAPI应用实例
     app = FastAPI(
         title="AI小助手",
-        description="提供文件审核、风险评估等功能的API接口",
+        description="提供文件审核、文件格式转换、风险评估等功能的API接口",
         version="1.0.0",
         lifespan=lifespan
     )
@@ -54,6 +55,9 @@ def create_app():
 
     # 将下载路由挂载到/api/download/urstemplate路径
     app.include_router(download_router, prefix="/api")
+
+    # 将文件格式转换路由挂载到/api/convert路径
+    app.include_router(convert_router, prefix="/api")
 
     logger.info("Routes registered successfully")
     return app
