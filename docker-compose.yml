@@ -1,0 +1,17 @@
+services:
+  # AIDocument 服务
+  aidocument:
+    image: aidocument
+    container_name: aidocument
+    restart: unless-stopped
+    volumes:
+      - /root/aidocument/Configs/FileReviewConfig:/app/Configs/FileReviewConfig
+      - /root/aidocument/Configs/RarConfig:/app/Configs/RarConfig
+      - /root/aidocument/Logs:/app/Logs
+      - /root/aidocument/Results/FileReviewResult:/app/Results/FileReviewResult
+      - /root/aidocument/Results/RarResult:/app/Results/RarResult
+    ports:
+      - 7001:7001
+    environment:
+      - PYTHONPATH=/app  # 设置Python路径
+      - PATH=/app/.venv/bin:$PATH

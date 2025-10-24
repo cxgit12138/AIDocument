@@ -1,7 +1,7 @@
 {
     "annotation": "这是注释：设置每次并发给ai的数据条数为maxConcurrentRequests",
     "api": {
-        "key": "sk-skojubiepolyzevdmpyvcbsgdhdivjyaearyflhwsvizhfkx",
+        "key": "",
         "baseUrl": "https://api.siliconflow.cn/v1",
         "modelName": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
     },
