@@ -24,6 +24,13 @@
 ### 3. 风险评估
 对企业生产过程中可能产生的风险事件进行识别与评估分析。
 
+## 快速启动
+### 1.启动后端服务
+uv sync  
+uv run main.py
+### 2.启动前端
+打开index.html
+
 ## docker部署
 ### 构建镜像
 docker build -t xx .
