@@ -33,9 +33,11 @@ RUN pip install uv
 # 复制项目依赖文件
 COPY pyproject.toml uv.lock* ./
 
-# 安装项目依赖并确保可执行文件在 PATH 中
-RUN uv sync --frozen && \
-    echo "export PATH=\"/app/.venv/bin:\$PATH\"" >> ~/.bashrc
+# 安装项目依赖
+RUN uv sync --frozen
+
+# 设置 PATH
+ENV PATH="/app/.venv/bin:$PATH"
 
 # 复制项目代码
 COPY . .
@@ -48,4 +50,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 ENV ICU_DATA=/usr/share/icu
 
 # 运行应用
-CMD ["/app/.venv/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7001"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7001"]
