@@ -1,0 +1,57 @@
+{
+    "supported_input_formats": [".md", ".txt", ".docx", ".pdf", ".html", ".json", ".yaml", ".yml"],
+    "conversion_map": {
+        ".md": {
+            "target_formats": [".html", ".docx", ".txt"],
+            "converter": "md_converter"
+        },
+        ".txt": {
+            "target_formats": [".md", ".html"],
+            "converter": "txt_converter"
+        },
+        ".docx": {
+            "target_formats": [".pdf", ".html", ".txt", ".md"],
+            "converter": "docx_converter"
+        },
+        ".pdf": {
+            "target_formats": [".txt", ".html", ".md"],
+            "converter": "pdf_converter"
+        },
+        ".html": {
+            "target_formats": [".md", ".docx", ".txt"],
+            "converter": "html_converter"
+        },
+        ".json": {
+            "target_formats": [".yaml", ".yml", ".txt", ".xml", ".csv", ".html"],
+            "converter": "json_converter"
+        },
+        ".yaml": {
+            "target_formats": [".json", ".txt"],
+            "converter": "yaml_converter"
+        },
+        ".yml": {
+            "target_formats": [".json", ".txt"],
+            "converter": "yaml_converter"
+        }
+    },
+    "format_descriptions": {
+        ".md": "Markdown文档",
+        ".txt": "纯文本文件",
+        ".docx": "Word文档",
+        ".pdf": "PDF文档",
+        ".html": "HTML网页",
+        ".json": "JSON数据文件",
+        ".yaml": "YAML配置文件",
+        ".yml": "YAML配置文件"
+    },
+    "media_types": {
+        ".pdf": "application/pdf",
+        ".html": "text/html",
+        ".txt": "text/plain",
+        ".md": "text/markdown",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".json": "application/json",
+        ".yaml": "application/yaml",
+        ".yml": "application/yaml"
+    }
+}

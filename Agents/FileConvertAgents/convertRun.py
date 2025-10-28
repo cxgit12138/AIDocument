@@ -10,26 +10,11 @@ import tempfile
 import uuid
 import shutil
 from typing import Dict, Any
+import importlib
 
-from Agents.FileConvertAgents import md_converter, txt_converter, docx_converter
-from Agents.FileConvertAgents import pdf_converter, html_converter, json_converter, yaml_converter
+from Configs.FileConvertConfig.convertConfigInit import conversion_config
 
 logger = logging.getLogger("convert_run")
-
-# 支持的输入格式
-SUPPORTED_INPUT_FORMATS = {'.md', '.txt', '.docx', '.pdf', '.html', '.json', '.yaml', '.yml'}
-
-# 每种格式适合转换的目标格式
-CONVERSION_MAP = {
-    '.md': ['.html', '.docx', '.txt'],  # Markdown适合转换为HTML、PDF、纯文本
-    '.txt': ['.md', '.html'],  # 纯文本适合转换为Markdown、HTML
-    '.docx': ['.pdf', '.html', '.txt', '.md'],  # Word文档适合转换为PDF、HTML、纯文本、Markdown
-    '.pdf': ['.txt', '.html', '.md'],  # PDF适合转换为纯文本、HTML（提取内容）
-    '.html': ['.md', '.docx', '.txt'],  # HTML适合转换为Markdown、docx、纯文本
-    '.json': ['.yaml', '.yml', '.txt', '.xml', '.csv', '.html'],  # JSON适合转换为YAML、纯文本、XML、CSV、HTML
-    '.yaml': ['.json', '.txt'],  # YAML适合转换为JSON、纯文本
-    '.yml': ['.json', '.txt']  # YML适合转换为JSON、纯文本
-}
 
 
 def get_supported_formats_info():
@@ -40,41 +25,21 @@ def get_supported_formats_info():
         包含所有支持格式的字典
     """
     format_info = {}
-    for source_ext, target_formats in CONVERSION_MAP.items():
+    conversion_map=conversion_config["conversion_map"]
+    format_descriptions=conversion_config["format_descriptions"]
+
+    for source_ext, target_info in conversion_map.items():
         format_info[source_ext] = {
-            "description": _get_format_description(source_ext),
+            "description": format_descriptions.get(source_ext, f'{source_ext}格式文件'),
             "target_formats": [
                 {
                     "extension": target_ext,
-                    "description": _get_format_description(target_ext)
+                    "description": format_descriptions.get(target_ext, f'{target_ext}格式文件')
                 }
-                for target_ext in target_formats
+                for target_ext in target_info["target_formats"]
             ]
         }
     return format_info
-
-
-def _get_format_description(ext: str) -> str:
-    """
-    获取文件格式描述
-
-    Args:
-        ext: 文件扩展名
-
-    Returns:
-        格式描述字符串
-    """
-    descriptions = {
-        '.md': 'Markdown文档',
-        '.txt': '纯文本文件',
-        '.docx': 'Word文档',
-        '.pdf': 'PDF文档',
-        '.html': 'HTML网页',
-        '.json': 'JSON数据文件',
-        '.yaml': 'YAML配置文件',
-        '.yml': 'YAML配置文件'
-    }
-    return descriptions.get(ext, f'{ext}格式文件')
 
 
 async def execute_conversion(file, target_format: str) -> Dict[str, Any]:
@@ -95,17 +60,22 @@ async def execute_conversion(file, target_format: str) -> Dict[str, Any]:
     ext = ext.lower()
 
     # 验证输入格式
-    if ext not in SUPPORTED_INPUT_FORMATS:
+    supported_formats = set(conversion_config["supported_input_formats"])
+    if ext not in supported_formats:
         raise ValueError(
-            f"不支持的输入格式: {ext}。支持的格式: {', '.join(SUPPORTED_INPUT_FORMATS)}"
+            f"不支持的输入格式: {ext}。支持的格式: {', '.join(supported_formats)}"
         )
 
     target_format = target_format.lower()
     target_ext = f".{target_format}"
 
     # 验证目标格式
-    if target_ext not in CONVERSION_MAP[ext]:
-        available_formats = ', '.join([fmt[1:] for fmt in CONVERSION_MAP[ext]])
+    conversion_map = conversion_config["conversion_map"]
+    if ext not in conversion_map:
+        raise ValueError(f"不支持的输入格式: {ext}")
+
+    if target_ext not in conversion_map[ext]["target_formats"]:
+        available_formats = ', '.join([fmt[1:] for fmt in conversion_map[ext]["target_formats"]])
         raise ValueError(
             f"无法将 {ext} 转换为 {target_format}。支持的目标格式: {available_formats}"
         )
@@ -149,7 +119,7 @@ async def execute_conversion(file, target_format: str) -> Dict[str, Any]:
 
 async def _perform_conversion(input_path: str, output_path: str, source_ext: str, target_ext: str):
     """
-    执行具体的文件格式转换
+    执行具体的文件格式转换（插件化）
 
     Args:
         input_path: 输入文件路径
@@ -160,76 +130,27 @@ async def _perform_conversion(input_path: str, output_path: str, source_ext: str
     logger.info(f"Performing conversion from {source_ext} to {target_ext}")
 
     try:
-        # 根据源文件和目标文件类型调用相应的转换函数
-        if source_ext == '.md':
-            if target_ext == '.html':
-                md_converter.convert_md_to_html(input_path, output_path)
-            elif target_ext == '.txt':
-                md_converter.convert_md_to_txt(input_path, output_path)
-            elif target_ext == '.docx':
-                md_converter.convert_md_to_docx(input_path, output_path)
-            # 可以添加更多格式转换
+        conversion_map = conversion_config["conversion_map"]
+        converter_name = conversion_map[source_ext]["converter"]
 
-        elif source_ext == '.txt':
-            if target_ext == '.md':
-                txt_converter.convert_txt_to_md(input_path, output_path)
-            elif target_ext == '.html':
-                txt_converter.convert_txt_to_html(input_path, output_path)
-            # 可以添加更多格式转换
+        # 动态导入转换器模块
+        converter_module = importlib.import_module(f"Agents.FileConvertAgents.{converter_name}")
 
-        elif source_ext == '.docx':
-            if target_ext == '.txt':
-                docx_converter.convert_docx_to_txt(input_path, output_path)
-            elif target_ext == '.html':
-                docx_converter.convert_docx_to_html(input_path, output_path)
-            elif target_ext == '.md':
-                docx_converter.convert_docx_to_md(input_path, output_path)
-            elif target_ext == '.pdf':
-                docx_converter.convert_docx_to_pdf(input_path, output_path)
-            # 可以添加更多格式转换
+        # 构造转换函数名
+        convert_func_name = f"convert_{source_ext[1:]}_to_{target_ext[1:]}"
 
-        elif source_ext == '.pdf':
-            if target_ext == '.txt':
-                pdf_converter.convert_pdf_to_txt(input_path, output_path)
-            elif target_ext == '.html':
-                pdf_converter.convert_pdf_to_html(input_path, output_path)
-            elif target_ext == '.md':
-                pdf_converter.convert_pdf_to_md(input_path, output_path)
-            # 可以添加更多格式转换
-
-        elif source_ext == '.html':
-            if target_ext == '.txt':
-                html_converter.convert_html_to_txt(input_path, output_path)
-            elif target_ext == '.md':
-                html_converter.convert_html_to_md(input_path, output_path)
-            elif target_ext == '.docx':
-                html_converter.convert_html_to_docx(input_path, output_path)
-            # 可以添加更多格式转换
-
-        elif source_ext == '.json':
-            if target_ext in ['.yaml', '.yml']:
-                json_converter.convert_json_to_yaml(input_path, output_path)
-            elif target_ext == '.txt':
-                json_converter.convert_json_to_txt(input_path, output_path)
-            elif target_ext == '.csv':
-                json_converter.convert_json_to_csv(input_path, output_path)
-            elif target_ext == '.xml':
-                json_converter.convert_json_to_xml(input_path, output_path)
-            elif target_ext == '.html':
-                json_converter.convert_json_to_html(input_path, output_path)
-            # 可以添加更多格式转换
-
-        elif source_ext in ['.yaml', '.yml']:
-            if target_ext == '.json':
-                yaml_converter.convert_yaml_to_json(input_path, output_path)
-            elif target_ext == '.txt':
-                yaml_converter.convert_yaml_to_txt(input_path, output_path)
-            # 可以添加更多格式转换
-
+        # 检查是否存在特定的转换函数
+        if hasattr(converter_module, convert_func_name):
+            convert_func = getattr(converter_module, convert_func_name)
+            convert_func(input_path, output_path)
         else:
-            # 默认处理方式，直接复制文件
-            with open(input_path, 'rb') as src, open(output_path, 'wb') as dst:
-                dst.write(src.read())
+            # 如果没有特定函数，尝试使用通用转换方法
+            logger.warning(f"未找到特定转换函数 {convert_func_name}，尝试通用转换方法")
+
+            # 抛出异常
+            raise Exception(f"不支持的转换：{source_ext} 到 {target_ext}")
+            # # 为了保持向后兼容，我们保留原有的转换逻辑
+            # _perform_conversion_legacy(converter_module, input_path, output_path, source_ext, target_ext)
 
         logger.info(f"Conversion completed: {output_path}")
 
@@ -248,14 +169,5 @@ def _get_media_type(ext: str) -> str:
     Returns:
         MIME类型字符串
     """
-    media_types = {
-        '.pdf': 'application/pdf',
-        '.html': 'text/html',
-        '.txt': 'text/plain',
-        '.md': 'text/markdown',
-        '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        '.json': 'application/json',
-        '.yaml': 'application/yaml',
-        '.yml': 'application/yaml'
-    }
+    media_types = conversion_config["media_types"]
     return media_types.get(ext, 'application/octet-stream')
