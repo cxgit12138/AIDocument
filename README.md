@@ -31,11 +31,19 @@ uv run main.py
 ### 2.启动前端
 打开index.html
 
-## docker部署
+## docker部署(切换到项目目录)
 ### 构建镜像
-docker build -t xx .
-### 相关文件挂载到外部
-按照docker-compose.yml文件的持久化目录创建相应的目录，并把相应的文件复制进去
+docker build -t aidocument:latest .
+### 创建临时容器（不启动）
+docker create --name ai-temp aidocument:latest
+### 创建宿主机目录
+mkdir -p /root/aidocument
+### 从临时容器复制文件到宿主机
+docker cp ai-temp:/app/Configs /root/aidocument/
+docker cp ai-temp:/app/Results /root/aidocument/
+docker cp ai-temp:/app/Logs /root/aidocument/
+### 删除临时容器
+docker rm ai-temp
 ### docker compose模式运行（也可普通运行）
 docker compose up -d
 
