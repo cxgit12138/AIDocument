@@ -1,7 +1,7 @@
 services:
   # AIDocument 服务
   aidocument:
-    image: aidocument:v1.2
+    image: aidocument:latest
     container_name: aidocument
     restart: unless-stopped
     volumes:
