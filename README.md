@@ -39,8 +39,8 @@ docker create --name ai-temp aidocument:latest
 ### 创建宿主机目录
 mkdir -p /root/aidocument
 ### 从临时容器复制文件到宿主机
-docker cp ai-temp:/app/Configs /root/aidocument/
-docker cp ai-temp:/app/Results /root/aidocument/
+docker cp ai-temp:/app/Configs /root/aidocument/  
+docker cp ai-temp:/app/Results /root/aidocument/  
 docker cp ai-temp:/app/Logs /root/aidocument/
 ### 删除临时容器
 docker rm ai-temp
