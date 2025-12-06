@@ -4,7 +4,6 @@
 
 import importlib
 import logging
-from typing import Dict, Any, Callable
 from pathlib import Path
 
 logger = logging.getLogger("plugin_manager")

@@ -91,7 +91,7 @@ async def review_file(
         # 保存上传文件
         filePath = os.path.join(temp_dir, file.filename)
         with open(filePath, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            shutil.copyfileobj(file.file, buffer)  # type: ignore
 
         logger.info(f"Saved file to: {filePath}")
         # 调用原有处理逻辑

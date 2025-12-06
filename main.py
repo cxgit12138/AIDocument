@@ -9,7 +9,6 @@ from Api.RarApi.rarApi import router as rar_router,init_rar_config
 from Api.RarApi.文件下载api import router as download_router
 from Api.ConvertApi.convertApi import router as convert_router
 import uvicorn
-import logging
 from Configs.logging_config import setup_logging
 
 logger=setup_logging()

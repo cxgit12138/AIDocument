@@ -5,7 +5,7 @@ HTML文件转换代理
 
 from bs4 import BeautifulSoup
 import re
-from typing import Dict, List
+from typing import Dict
 
 
 def convert_html_to_txt(input_path: str, output_path: str):

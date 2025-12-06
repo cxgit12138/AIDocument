@@ -5,8 +5,6 @@ RAR分析主流程控制模块
 """
 
 import asyncio
-import logging
-from typing import List
 from pathlib import Path
 
 from Models.RarModels.DomainModels.rarDomainModels import RarData
@@ -90,7 +88,7 @@ async def run_rar_analysis(
         processed_items = await asyncio.wait_for(asyncio.gather(*tasks), timeout=timeout_seconds)
 
         # 写入Excel文件
-        write_excel(template_path, str(output_excel), processed_items)
+        write_excel(str(template_path), str(output_excel), processed_items)
 
         # 导出JSON数据
         export_to_json(processed_items, str(output_json))

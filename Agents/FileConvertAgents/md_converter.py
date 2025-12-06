@@ -5,11 +5,7 @@ Markdown文件转换代理
 
 import markdown
 from bs4 import BeautifulSoup
-import json
-import yaml
 from typing import Dict, Any
-import pdfkit
-import os
 
 
 def convert_md_to_html(input_path: str, output_path: str):

@@ -59,11 +59,11 @@ async def agent_file_review_run(filePath,termBankPath,fileReviewResultPath,clien
         )
         # 保存结果
         with open(fileReviewResultPath, 'w', encoding='utf-8') as f:
-            json.dump(errors.dict(), f, ensure_ascii=False, indent=4)
+            json.dump(errors.model_dump(), f, ensure_ascii=False, indent=4)
         print(f"文件审核结果已保存到：{fileReviewResultPath}")
         logger.info(f"File review completed. Results saved to: {fileReviewResultPath}")
 
-        return errors.dict()
+        return errors.model_dump()
     else:
         logger.warning(f"Unsupported file format: {ext}")
         print("文件格式不合要求")

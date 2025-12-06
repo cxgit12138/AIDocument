@@ -1,6 +1,5 @@
 import logging
 import logging.config
-import json
 from pathlib import Path
 
 # 日志配置

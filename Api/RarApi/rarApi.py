@@ -2,7 +2,6 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
 import tempfile
 import os
-import asyncio
 import logging
 from pathlib import Path
 from datetime import datetime
@@ -41,7 +40,6 @@ async def analyze_urs(
 
     Args:
         urs_file: URS Excel文件
-        template_file: RAR模板Excel文件
         limit: 处理的数据条数限制
 
     Returns:
@@ -55,7 +53,7 @@ async def analyze_urs(
 
         # 写入上传的文件
         with open(urs_path, "wb") as f:
-            f.write(await urs_file.read())
+            f.write(await urs_file.read())  # type: ignore
 
         template_path=config["template_path"]
 

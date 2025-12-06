@@ -2,7 +2,7 @@ import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 from Models.RarModels.DomainModels.rarDomainModels import RarData
-from typing import List, Dict, Any
+from typing import List
 import json
 from pathlib import Path
 
@@ -44,7 +44,16 @@ def read_urs_file(file_path: str) -> List[RarData]:
             urs_data = RarData(
                 UrsNo=first_cell,
                 RequirementDesc=str(row[1]).strip(),
-                BelongChapter=sheet_name
+                BelongChapter=sheet_name,
+                # 显式设置可选字段为 None
+                FailureEvent=None,
+                PotentialFailureConsequences=None,
+                Severity=None,
+                Probability=None,
+                RiskLevel=None,
+                Detectability=None,
+                RiskPriority=None,
+                RiskControlMeasures=None
             )
             urs_data_list.append(urs_data)
 
@@ -110,7 +119,7 @@ def export_to_json(rar_data_array: List[RarData],output_file_path:str) -> None:
 
     """
     # 将Pydantic模型转换为字典列表
-    data_list = [data.dict() for data in rar_data_array]
+    data_list = [data.model_dump() for data in rar_data_array]
 
     # 创建结果对象
     result = {

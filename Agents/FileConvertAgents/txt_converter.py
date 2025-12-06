@@ -3,7 +3,6 @@
 处理TXT到其他格式的转换
 """
 
-import markdown
 
 
 def convert_txt_to_md(input_path: str, output_path: str):

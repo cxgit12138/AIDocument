@@ -4,11 +4,7 @@ Word文档转换代理
 """
 
 from docx import Document
-import json
-from docx2pdf import convert
-import tempfile
-import os
-from typing import List,Dict,Any
+from typing import Dict,Any
 
 
 def convert_docx_to_txt(input_path: str, output_path: str):

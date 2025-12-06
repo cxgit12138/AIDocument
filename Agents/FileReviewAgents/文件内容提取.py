@@ -22,7 +22,7 @@ def extract_docx_styles(fileReviewResultPath):
 
     try:
         # 获取所有段落
-        paragraphs = [node.as_paragraph() for node in doc.get_child_nodes(NodeType.PARAGRAPH, True)]
+        paragraphs = [node.as_paragraph() for node in doc.get_child_nodes(NodeType.PARAGRAPH, True)] #type: ignore
         print(f"总段落数: {len(paragraphs)}")
 
         # 遍历段落
@@ -53,10 +53,12 @@ def extract_docx_styles(fileReviewResultPath):
             para_fontSize = None
             para_fontColor = (0, 0, 0)  # 默认黑色
 
+            runs = []
+
             # 收集段落级数据（仅当段落文本非空时）
             if para_text:
                 # 遍历段落内的Runs
-                runs = para.get_child_nodes(NodeType.RUN, False)
+                runs = para.get_child_nodes(NodeType.RUN, False) #type: ignore
 
                 # 如果段落有runs，使用第一个run的字体信息作为段落字体信息
                 if runs.count > 0:
