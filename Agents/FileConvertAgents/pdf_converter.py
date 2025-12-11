@@ -172,7 +172,7 @@ def format_text_to_html(item: Dict[str, Any]) -> str:
     return text
 
 
-# ==================== 转换函数（被 convertRun.py 调用） ====================
+# ==================== 转换函数（被 convert_run.py 调用） ====================
 
 def convert_pdf_to_txt(input_path: str, output_path: str):
     """

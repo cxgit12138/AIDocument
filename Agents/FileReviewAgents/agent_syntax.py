@@ -1,11 +1,11 @@
 """
 对文件内容的基础语法进行ai审核
 """
-from  Models.FileReviewModels.DomainModels.fileReviewDomainModels import GrammarError
+from  Models.FileReviewModels.DomainModels.file_review_domain_models import GrammarError
 import asyncio
 import json
 
-async def check_grammarErrors(text_blocks, client, modelName):
+async def check_grammar_errors(text_blocks, client, model_name):
     """并发处理语法检查"""
 
     async def process_block(text_block):
@@ -38,8 +38,8 @@ async def check_grammarErrors(text_blocks, client, modelName):
         messages = [{"role": "system", "content": system_prompt},
                     {"role": "user", "content": text_block}]
         try:
-            response =  await client.chat.completions.create(
-                model=modelName,
+            response = await client.chat.completions.create(
+                model=model_name,
                 messages=messages,
                 response_format={
                     "type": "json_object"
@@ -56,10 +56,10 @@ async def check_grammarErrors(text_blocks, client, modelName):
     tasks = [process_block(block) for block in text_blocks]
     results = await asyncio.gather(*tasks)
 
-    grammarErrors = []
+    grammar_errors = []
     for result in results:
         if isinstance(result, list):
-            grammarErrors.extend(result)
+            grammar_errors.extend(result)
 
-    print(f"语法检查完成，找到 {len(grammarErrors)} 个错误")
-    return grammarErrors
+    print(f"语法检查完成，找到 {len(grammar_errors)} 个错误")
+    return grammar_errors

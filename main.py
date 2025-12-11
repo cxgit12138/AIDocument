@@ -4,10 +4,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from Api.FileReviewApi.fileReviewApi import router as file_review_router
-from Api.RarApi.rarApi import router as rar_router,init_rar_config
-from Api.RarApi.文件下载api import router as download_router
-from Api.ConvertApi.convertApi import router as convert_router
+from Api.FileReviewApi.file_review_api import router as file_review_router
+from Api.RarApi.rar_api import router as rar_router,init_rar_config
+from Api.RarApi.file_download_api import router as download_router
+from Api.ConvertApi.convert_api import router as convert_router
 import uvicorn
 from Configs.logging_config import setup_logging
 

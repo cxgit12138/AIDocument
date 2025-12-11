@@ -1,7 +1,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from Models.RarModels.DomainModels.rarDomainModels import RarData
+from Models.RarModels.DomainModels.rar_domain_models import RarData
 from typing import List
 import json
 from pathlib import Path
@@ -41,19 +41,20 @@ def read_urs_file(file_path: str) -> List[RarData]:
                 continue
 
             # 需求行处理
+            # noinspection PyArgumentList
             urs_data = RarData(
-                UrsNo=first_cell,
-                RequirementDesc=str(row[1]).strip(),
-                BelongChapter=sheet_name,
+                urs_no=first_cell,
+                requirement_desc=str(row[1]).strip(),
+                belong_chapter=sheet_name,
                 # 显式设置可选字段为 None
-                FailureEvent=None,
-                PotentialFailureConsequences=None,
-                Severity=None,
-                Probability=None,
-                RiskLevel=None,
-                Detectability=None,
-                RiskPriority=None,
-                RiskControlMeasures=None
+                failure_event=None,
+                potential_failure_consequences=None,
+                severity=None,
+                probability=None,
+                risk_level=None,
+                detectability=None,
+                risk_priority=None,
+                risk_control_measures=None
             )
             urs_data_list.append(urs_data)
 
@@ -85,19 +86,19 @@ def write_excel(template_file_path: str,output_file_path:str,rar_data_array: Lis
         print(f"正在写入第{row - 5}条数据...\n")
 
         # 将数据写入Excel
-        worksheet[f"A{row}"] = data.UrsNo
-        worksheet[f"B{row}"] = data.RequirementDesc
-        worksheet[f"C{row}"] = data.FailureEvent
-        worksheet[f"D{row}"] = data.PotentialFailureConsequences
-        worksheet[f"E{row}"] = data.Severity
-        worksheet[f"F{row}"] = data.Probability
-        worksheet[f"G{row}"] = data.RiskLevel
-        worksheet[f"H{row}"] = data.Detectability
-        worksheet[f"I{row}"] = data.RiskPriority
+        worksheet[f"A{row}"] = data.urs_no
+        worksheet[f"B{row}"] = data.requirement_desc
+        worksheet[f"C{row}"] = data.failure_event
+        worksheet[f"D{row}"] = data.potential_failure_consequences
+        worksheet[f"E{row}"] = data.severity
+        worksheet[f"F{row}"] = data.probability
+        worksheet[f"G{row}"] = data.risk_level
+        worksheet[f"H{row}"] = data.detectability
+        worksheet[f"I{row}"] = data.risk_priority
 
         # J列因内容较长特殊处理（风险控制措施）
         cell = worksheet[f"J{row}"]
-        cell.value = data.RiskControlMeasures
+        cell.value = data.risk_control_measures
         # 插入换行符
         cell.value = cell.value.replace(',', ',\n') if cell.value else ""
         # 启用自动换行
@@ -123,7 +124,7 @@ def export_to_json(rar_data_array: List[RarData],output_file_path:str) -> None:
 
     # 创建结果对象
     result = {
-        "totalItems": len(data_list),
+        "total_items": len(data_list),
         "items": data_list
     }
 

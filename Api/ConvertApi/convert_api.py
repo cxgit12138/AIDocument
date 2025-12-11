@@ -1,4 +1,4 @@
-# file: Api/ConvertApi/convertApi.py
+# file: Api/ConvertApi/convert_api.py
 """
 文档格式转换API模块
 支持多种文档格式之间的相互转换
@@ -10,7 +10,7 @@ import logging
 import shutil
 import os
 
-from Agents.FileConvertAgents.convertRun import execute_conversion, get_supported_formats_info
+from Agents.FileConvertAgents.convert_run import execute_conversion, get_supported_formats_info
 
 router = APIRouter()
 logger = logging.getLogger("convert_api")

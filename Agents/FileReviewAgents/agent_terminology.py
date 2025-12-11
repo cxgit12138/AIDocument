@@ -2,42 +2,42 @@
 对文件内容的用词术语准确度，和术语库进行比对审核
 术语检查不调用外部API，保持同步函数
 """
-from Models.FileReviewModels.DomainModels.fileReviewDomainModels import TermBank,TermError
+from Models.FileReviewModels.DomainModels.file_review_domain_models import TermBank,TermError
 import json
 import re
 import concurrent.futures
 
 
-def load_terminology(termBankPath):
+def load_terminology(term_bank_path):
     """加载新格式术语库"""
     try:
-        with open(termBankPath, 'r', encoding='utf-8') as f:
+        with open(term_bank_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             # 使用模型解析数据
             term_bank = TermBank(**data)
-            return term_bank.termBank
+            return term_bank.term_bank
     except Exception as e:
         print(f"术语库加载失败: {str(e)}")
         return []
 
 
-def check_termErrors(text_blocks, termBankPath):
-    terminology_db = load_terminology(termBankPath)  # 现在获取的是termBank数组
+def check_term_errors(text_blocks, term_bank_path):
+    terminology_db = load_terminology(term_bank_path)  # 现在获取的是term_bank数组
 
     # 构建反向映射词典（错误形式 -> 正确术语）
     reverse_terminology = {}
     correct_terms = []  # 存储所有正确术语用于后续检查
     for term_entry in terminology_db:
-        correct_term = term_entry.correctTerm
+        correct_term = term_entry.correct_term
         correct_terms.append(correct_term)
-        for variant in term_entry.errorTerm:
+        for variant in term_entry.error_term:
             reverse_terminology[variant.lower()] = correct_term
 
     # 构建正则表达式匹配模式
     terms_to_match = []
     for term_entry in terminology_db:
-        terms_to_match.append(term_entry.correctTerm)
-        terms_to_match.extend(term_entry.errorTerm)
+        terms_to_match.append(term_entry.correct_term)
+        terms_to_match.extend(term_entry.error_term)
 
     pattern_str = '|'.join(r'{}'.format(re.escape(term)) for term in terms_to_match)
     pattern = re.compile(pattern_str, flags=re.IGNORECASE)
@@ -57,10 +57,11 @@ def check_termErrors(text_blocks, termBankPath):
                 # 查找对应的正确术语
                 for correct_term in correct_terms:
                     if correct_term.lower() == matched_lower and correct_term != matched_term:
+                        # noinspection PyArgumentList
                         block_errors.append(TermError(
-                            errorStatement=text_block,
-                            typeOfError="术语大小写不规范",
-                            errorWord=matched_term,
+                            error_statement=text_block,
+                            type_of_error="术语大小写不规范",
+                            error_word=matched_term,
                             revised=correct_term
                         ))
                 continue
@@ -68,10 +69,11 @@ def check_termErrors(text_blocks, termBankPath):
             # 检查是否是错误变体
             if matched_lower in reverse_terminology:
                 correct_term = reverse_terminology[matched_lower]
+                # noinspection PyArgumentList
                 block_errors.append(TermError(
-                    errorStatement=text_block,
-                    typeOfError="术语不规范",
-                    errorWord=matched_term,
+                    error_statement=text_block,
+                    type_of_error="术语不规范",
+                    error_word=matched_term,
                     revised=correct_term
                 ))
 

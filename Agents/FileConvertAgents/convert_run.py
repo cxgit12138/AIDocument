@@ -1,4 +1,4 @@
-# file: Agents/FileConvertAgents/convertRun.py
+# file: Agents/FileConvertAgents/convert_run.py
 """
 文件格式转换执行模块
 处理具体的文件格式转换逻辑
@@ -12,7 +12,7 @@ import shutil
 from typing import Dict, Any
 import importlib
 
-from Configs.FileConvertConfig.convertConfigInit import conversion_config
+from Configs.FileConvertConfig.convert_config_init import conversion_config
 
 logger = logging.getLogger("convert_run")
 

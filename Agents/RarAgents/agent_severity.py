@@ -1,6 +1,6 @@
 import asyncio
 from Agents.RarAgents.client import client, MODEL_NAME
-from Models.RarModels.DomainModels.rarDomainModels import RarData
+from Models.RarModels.DomainModels.rar_domain_models import RarData
 
 
 async def analyze_severity(data: RarData, semaphore: asyncio.Semaphore) -> None:
@@ -42,7 +42,7 @@ async def analyze_severity(data: RarData, semaphore: asyncio.Semaphore) -> None:
     输出：低
     """
 
-    user_prompt = f"潜在失效后果：{data.PotentialFailureConsequences}"
+    user_prompt = f"潜在失效后果：{data.potential_failure_consequences}"
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
@@ -66,4 +66,4 @@ async def analyze_severity(data: RarData, semaphore: asyncio.Semaphore) -> None:
 
         # 找出出现次数最多的字符
         most_frequent = max(count.items(), key=lambda x: x[1])[0]
-        data.Severity = most_frequent
+        data.severity = most_frequent

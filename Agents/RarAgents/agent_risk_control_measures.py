@@ -1,6 +1,6 @@
 import asyncio
 from Agents.RarAgents.client import client, MODEL_NAME
-from Models.RarModels.DomainModels.rarDomainModels import RarData
+from Models.RarModels.DomainModels.rar_domain_models import RarData
 
 
 async def analyze_risk_control_measures(data: RarData, semaphore: asyncio.Semaphore) -> None:
@@ -43,7 +43,7 @@ async def analyze_risk_control_measures(data: RarData, semaphore: asyncio.Semaph
     在DQ进行设计确认，在IQ对配置的[参数A]进行确认，在OQ对功能的[功能B]进行确认并进行挑战性测试，在PQ对业务的[流程C]进行确认
     """
 
-    user_prompt = f"需求：{data.RequirementDesc}\n失效事件：{data.FailureEvent}\n潜在失效后果：{data.PotentialFailureConsequences}\n严重性：{data.Severity}\n可能性：{data.Probability}\n风险等级：{data.RiskLevel}\n可检测性：{data.Detectability}\n风险优先级：{data.RiskPriority}"
+    user_prompt = f"需求：{data.requirement_desc}\n失效事件：{data.failure_event}\n潜在失效后果：{data.potential_failure_consequences}\n严重性：{data.severity}\n可能性：{data.probability}\n风险等级：{data.risk_level}\n可检测性：{data.detectability}\n风险优先级：{data.risk_priority}"
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -56,4 +56,4 @@ async def analyze_risk_control_measures(data: RarData, semaphore: asyncio.Semaph
             model=MODEL_NAME,
             messages=messages
         )
-        data.RiskControlMeasures = response.choices[0].message.content.strip()
+        data.risk_control_measures = response.choices[0].message.content.strip()

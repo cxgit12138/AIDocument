@@ -24,11 +24,6 @@ dependencies = [
     { name = "uvicorn" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "code2flow" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "aspose-words", specifier = ">=25.10.0" },
@@ -49,7 +44,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "code2flow", specifier = ">=2.5.1" }]
+dev = []
 
 [[package]]
 name = "annotated-types"
@@ -250,12 +245,6 @@ sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/46/61/de6cd827efad20
 wheels = [
     { url = "https://pypi.tuna.tsinghua.edu.cn/packages/db/d3/9dcc0f5797f070ec8edf30fbadfb200e71d9db6b84d211e3b2085a7589a0/click-8.3.0-py3-none-any.whl", hash = "sha256:9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc", size = 107295, upload-time = "2025-09-18T17:32:22.42Z" },
 ]
-
-[[package]]
-name = "code2flow"
-version = "2.5.1"
-source = { registry = "https://pypi.tuna.tsinghua.edu.cn/simple" }
-sdist = { url = "https://pypi.tuna.tsinghua.edu.cn/packages/3b/a5/d1a0d78f1d31d592131eed19c48839c17a842094a683242ec0d0a825830e/code2flow-2.5.1.tar.gz", hash = "sha256:ad98717920da6598dac38a1951f38b84891f4aa4bd2f36c119b0dbac729f4785", size = 313232, upload-time = "2023-01-08T22:56:44.649Z" }
 
 [[package]]
 name = "colorama"

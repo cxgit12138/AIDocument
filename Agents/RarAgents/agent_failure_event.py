@@ -1,6 +1,6 @@
 import asyncio
 from Agents.RarAgents.client import client, MODEL_NAME
-from Models.RarModels.DomainModels.rarDomainModels import RarData
+from Models.RarModels.DomainModels.rar_domain_models import RarData
 
 
 async def analyze_failure_event(data: RarData, semaphore: asyncio.Semaphore) -> None:
@@ -42,7 +42,7 @@ async def analyze_failure_event(data: RarData, semaphore: asyncio.Semaphore) -> 
     输出：当RBAC策略缓存失效时，系统错误返回未授权信息
     """
 
-    user_prompt = data.RequirementDesc
+    user_prompt = data.requirement_desc
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
@@ -54,4 +54,4 @@ async def analyze_failure_event(data: RarData, semaphore: asyncio.Semaphore) -> 
             model=MODEL_NAME,
             messages=messages
         )
-        data.FailureEvent = response.choices[0].message.content.strip()
+        data.failure_event = response.choices[0].message.content.strip()

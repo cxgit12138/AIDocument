@@ -1,20 +1,23 @@
 # 保留以下与API直接相关的模型
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
-from Models.FileReviewModels.DomainModels.fileReviewDomainModels import FileReviewConfig,GrammarError,TermError,FormatError
+from Models.FileReviewModels.DomainModels.file_review_domain_models import FileReviewConfig,GrammarError,TermError,FormatError
 
 
 
 class Config(BaseModel):
     annotation: Optional[str] = None
-    fileReview: FileReviewConfig
+    file_review: FileReviewConfig = Field(alias='fileReview')
+    
+    class Config:
+        populate_by_name = True
 
 
 
 class FileReviewResult(BaseModel):
-    grammarErrors: List[GrammarError]
-    termErrors: List[TermError]
-    formatErrors: List[FormatError]
+    grammar_errors: List[GrammarError]
+    term_errors: List[TermError]
+    format_errors: List[FormatError]
 
 
 class Example:

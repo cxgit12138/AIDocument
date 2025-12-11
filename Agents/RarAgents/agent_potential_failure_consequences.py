@@ -1,6 +1,6 @@
 import asyncio
 from Agents.RarAgents.client import client, MODEL_NAME
-from Models.RarModels.DomainModels.rarDomainModels import RarData
+from Models.RarModels.DomainModels.rar_domain_models import RarData
 
 
 async def analyze_potential_failure_consequences(data: RarData, semaphore: asyncio.Semaphore) -> None:
@@ -38,7 +38,7 @@ async def analyze_potential_failure_consequences(data: RarData, semaphore: async
     输出：导致历史数据丢失，影响业务连续性
     """
 
-    user_prompt = f"需求：{data.RequirementDesc}\n失效事件：{data.FailureEvent}"
+    user_prompt = f"需求：{data.requirement_desc}\n失效事件：{data.failure_event}"
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
@@ -50,4 +50,4 @@ async def analyze_potential_failure_consequences(data: RarData, semaphore: async
             model=MODEL_NAME,
             messages=messages
         )
-        data.PotentialFailureConsequences = response.choices[0].message.content.strip()
+        data.potential_failure_consequences = response.choices[0].message.content.strip()

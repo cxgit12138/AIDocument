@@ -6,19 +6,19 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
-from Configs.RarConfig.rarConfigInit import rar_config
-from Agents.RarAgents.agentRunR import run_rar_analysis
+from Configs.RarConfig.rar_config_init import rar_config
+from Agents.RarAgents.agent_run_r import run_rar_analysis
 
-router=APIRouter()
+router = APIRouter()
 
-logger=logging.getLogger("rar_annalysis")
+logger = logging.getLogger("rar_analysis")
 
 # 初始化配置
 def init_rar_config():
     global config
     config = {
-        "output_dir": Path(rar_config["output"]["path"]),
-        "concurrency": rar_config["concurrency"],
+        "output_dir": Path(rar_config.output.path),
+        "concurrency": rar_config.concurrency.max_concurrent_requests,
         "template_path": Path("./Files/RarUploads/RAR空白模板.xlsx")
     }
     config["output_dir"].mkdir(parents=True, exist_ok=True)
@@ -55,7 +55,7 @@ async def analyze_urs(
         with open(urs_path, "wb") as f:
             f.write(await urs_file.read())  # type: ignore
 
-        template_path=config["template_path"]
+        template_path = config["template_path"]
 
         # 生成输出文件名
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -71,7 +71,7 @@ async def analyze_urs(
                 output_excel=output_excel,
                 output_json=output_json,
                 limit=limit,
-                max_concurrent_requests=config["concurrency"]["maxConcurrentRequests"],
+                max_concurrent_requests=config["concurrency"],
                 timeout_seconds=600
             )
             logger.info(f"RAR analysis completed for: {output_excel}")
